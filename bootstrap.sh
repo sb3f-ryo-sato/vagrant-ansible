@@ -183,11 +183,16 @@ fi
 ## ------------------------------------------------
 ## Update system
 ##
+## Bug 1566502 - nmcli cannot modify interface
+## https://bugzilla.redhat.com/show_bug.cgi?id=1566502
+##
 ## glibc-common: For Japanese environment
 ## gcc kernel-devel: For VirtualBox Guest Additions
 ## emacs-nox screen: For personal reasons
 ## ------------------------------------------------
-yum -y update
+rm -frv /var/cache/yum
+yum -y upgrade
+systemctl restart NetworkManager
 yum -y reinstall glibc-common
 yum -y install gcc kernel-devel emacs-nox screen
 
@@ -219,6 +224,7 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
     ## ------------------------------------------------
     ## Change YUM mirror for SCL
     ## ------------------------------------------------
+    cd /etc/yum.repos.d; pwd
     TARGET_FILE=CentOS-SCLo-scl-rh.repo
     grep -i iij ${TARGET_FILE} &>/dev/null
     RET=$?
@@ -259,7 +265,7 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
     ## ------------------------------------------------
     ## Install Serverspec and Infrataster
     ## ------------------------------------------------
-    cd; pwd
+    cd /usr/local/src; pwd
     scl enable rh-ruby24 'bundle init'
     TARGET_FILE=Gemfile
     cat <<- EOF >> ${TARGET_FILE}
@@ -269,7 +275,42 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
 	gem 'serverspec'
 	gem 'infrataster'
 EOF
-    scl enable rh-ruby24 bundle
+    scl enable rh-git29 rh-ruby24 bundle
+fi
+
+## ------------------------------------------------
+## Install Python modules
+## ------------------------------------------------
+if [ ${ECL_FLAG} -ne 0 ]; then
+
+    ## ------------------------------------------------
+    ## Install package
+    ## https://ecl.ntt.com/documents/tutorials/eclc/rsts/installation.html
+    ## ------------------------------------------------
+    yum -y install gcc python-devel python-virtualenv
+
+    ## ------------------------------------------------
+    ## Install pip
+    ## ------------------------------------------------
+    cd /usr/local/sbin; pwd
+    curl -O https://bootstrap.pypa.io/get-pip.py
+    chmod -v a+x get-pip.py
+    ls -l get-pip.py
+
+    ## ------------------------------------------------
+    ## Install eclcli, and upgrade six
+    ## ------------------------------------------------
+    ./get-pip.py
+    which pip easy_install
+    pip install \
+        ansible-tower-cli \
+        recommonmark \
+        sphinx \
+        sphinx_rtd_theme \
+        sphinxcontrib-blockdiag \
+        sphinxcontrib-seqdiag \
+        sphinxcontrib-actdiag \
+        sphinxcontrib-nwdiag
 fi
 
 ## ------------------------------------------------
