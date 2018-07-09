@@ -246,9 +246,9 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
 	ansible \
 	zlib-devel \
 	rh-git29 \
-	rh-ruby24-rubygem-bundler \
-	rh-ruby24-rubygem-rake \
-	rh-ruby24-ruby-devel
+	rh-ruby25-rubygem-bundler \
+	rh-ruby25-rubygem-rake \
+	rh-ruby25-ruby-devel
     echo 'alias git="LD_LIBRARY_PATH=${LIBRARY_PATH} git"' | tee -a /home/ansible/.bashrc
 
     ## ------------------------------------------------
@@ -266,7 +266,7 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
     ## Install Serverspec and Infrataster
     ## ------------------------------------------------
     cd /usr/local/src; pwd
-    scl enable rh-ruby24 'bundle init'
+    scl enable rh-ruby25 'bundle init'
     TARGET_FILE=Gemfile
     cat <<- EOF >> ${TARGET_FILE}
 	gem 'rbnacl', '>= 3.2', '< 5.0', :require => false
@@ -275,7 +275,7 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
 	gem 'serverspec'
 	gem 'infrataster'
 EOF
-    scl enable rh-git29 rh-ruby24 bundle
+    scl enable rh-git29 rh-ruby25 bundle
 fi
 
 ## ------------------------------------------------
