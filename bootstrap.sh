@@ -250,6 +250,14 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
 	rh-ruby25-rubygem-rake \
 	rh-ruby25-ruby-devel
     echo 'alias git="LD_LIBRARY_PATH=${LIBRARY_PATH} git"' | tee -a /home/ansible/.bashrc
+    grep -F 'LD_LIBRARY_PATH' /opt/rh/*/enable \
+	| awk -F '=' '{print $2}' \
+	| awk -F '$' '{print $1}' \
+	| tr ':' '\n' \
+	| sort -r \
+	| uniq \
+	| tee /etc/ld.so.conf.d/scl.conf
+    ldconfig -v
 
     ## ------------------------------------------------
     ## Enable Software Collections
