@@ -175,6 +175,7 @@ if [ ${RET} -ne 0 ]; then
     sed -i \
 	-e 's/^mir/#mir/g' \
 	-e 's/^#base/base/g' \
+	-e 's/^gpgcheck/repo_gpgcheck=1\ngpgcheck/g' \
 	-e 's|mirror\.centos\.org|ftp.iij.ad.jp/pub/linux|g' \
 	${TARGET_FILE}
     diff -u ${BACKUP_FILE} ${TARGET_FILE}
