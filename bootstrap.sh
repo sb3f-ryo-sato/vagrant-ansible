@@ -274,6 +274,7 @@ if [ ${ANSIBLE_FLAG} -ne 0 ]; then
 	gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', :require => false
 	gem 'serverspec'
 	gem 'infrataster'
+	gem 'awspec'
 EOF
     scl enable rh-git29 rh-ruby25 bundle
 fi
